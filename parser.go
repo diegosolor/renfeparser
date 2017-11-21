@@ -20,17 +20,17 @@ func createJourneyURL(origin string, destiny string, search_date time.Time)(url 
 }
 
 
-func ParseJourneysForDay(origin string, destiny string, search_date time.Time) {
+func ParseJourneysForDay(origin string, destiny string, search_date time.Time)(journeys []Journey) {
     url := createJourneyURL(origin, destiny, search_date)
     doc, err := goquery.NewDocument(url)
     CheckError(err)
     
     doc.Find("#row tbody .odd,.even").Each(func(row_number int, row_journey *goquery.Selection) {
-        //log.Print(fmt.Sprintf("Row number %d", row_number))
         journey := parseJourneyRow(row_journey, origin, destiny, search_date)
-        log.Print(journey)
+        journeys = append(journeys, journey)
     })
 
+    return
 }
 
 func parseJourneyRow(tr *goquery.Selection, origin string, destiny string, search_date time.Time) (Journey) {
