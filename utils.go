@@ -1,14 +1,11 @@
 package renfeparser
 
 import (
-    "log"
+	"log"
 )
 
-
-
 func CheckError(err error) {
-    if err != nil {
-        log.Fatal("ERROR:", err)
-    }
+	if err != nil {
+		log.Fatal("ERROR:", err)
+	}
 }
-
