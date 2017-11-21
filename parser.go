@@ -31,6 +31,16 @@ func ParseJourneysForDay(origin string, destiny string, search_date time.Time) (
 	return
 }
 
+func ParseJourneysForPeriod(origin string, destiny string, start_date time.Time, end_date time.Time) (journeys []Journey) {
+    search_date := start_date
+    for search_date.Before(end_date) {
+        days_journeys := ParseJourneysForDay(origin, destiny, search_date)
+        journeys = append(journeys, days_journeys...)
+        search_date = search_date.AddDate(0,0,1)
+    }
+    return
+}
+
 func parseJourneyRow(tr *goquery.Selection, origin string, destiny string, search_date time.Time) Journey {
 	journey := Journey{Origin: origin, Destiny: destiny}
 	tr.Find("td").Each(func(column_number int, column_content *goquery.Selection) {
