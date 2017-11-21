@@ -32,13 +32,18 @@ func ParseJourneysForDay(origin string, destiny string, search_date time.Time) (
 }
 
 func ParseJourneysForPeriod(origin string, destiny string, start_date time.Time, end_date time.Time) (journeys []Journey) {
-    search_date := start_date
-    for search_date.Before(end_date) {
-        days_journeys := ParseJourneysForDay(origin, destiny, search_date)
-        journeys = append(journeys, days_journeys...)
-        search_date = search_date.AddDate(0,0,1)
-    }
-    return
+	search_date := start_date
+	for search_date.Before(end_date) {
+		days_journeys := ParseJourneysForDay(origin, destiny, search_date)
+		if len(days_journeys) == 0 {
+			//if none journeys are found we suppose this is the last day renfe operator pusblished journeys
+			log.Print(fmt.Sprintf("No journeys are found for date %v, we stop looking forward", search_date))
+			break
+		}
+		journeys = append(journeys, days_journeys...)
+		search_date = search_date.AddDate(0, 0, 1)
+	}
+	return
 }
 
 func parseJourneyRow(tr *goquery.Selection, origin string, destiny string, search_date time.Time) Journey {
