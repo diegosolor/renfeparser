@@ -51,7 +51,7 @@ func parseJourneyRow(tr *goquery.Selection, origin string, destiny string, searc
 	tr.Find("td").Each(func(column_number int, column_content *goquery.Selection) {
 		switch column_number {
 		case 0:
-			journey.Train_type = standardizeSpaces(column_content.Text())
+                journey.Train_type, journey.Train_id = parseTrainTypeId(column_content.Text())
 		case 1: //departure
 			journey.Departure = parse_time(search_date, column_content.Text())
 		case 2: //arrival
@@ -62,6 +62,15 @@ func parseJourneyRow(tr *goquery.Selection, origin string, destiny string, searc
 
 	})
 	return journey
+}
+
+func parseTrainTypeId(train_type_and_id string) (train_type string, id int) {
+    train_type_and_id = standardizeSpaces(train_type_and_id)
+    type_and_id := strings.Split(train_type_and_id, " ")
+    train_type = type_and_id[1]
+    id, err := strconv.Atoi(type_and_id[0])
+    CheckError(err)
+    return
 }
 
 func parse_time(date time.Time, str_time string) time.Time {
