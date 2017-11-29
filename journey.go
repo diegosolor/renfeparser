@@ -9,8 +9,7 @@ type Journey struct {
     Origin, Destiny, Train_type string
     Departure, Arrival time.Time
     Prices_by_class map[string]float64 
-    Has_offer_price bool
-    Train_id int
+    Train_id string
 }
 
 func (j Journey) String() string {
@@ -20,4 +19,14 @@ func (j Journey) String() string {
         journey_text = journey_text + fmt.Sprintf("\n\t%s: %v euros",class, price)
     }
     return journey_text
+}
+
+func (j *Journey) AddPrices(prices map[string]float64) {
+    if  j.Prices_by_class == nil {
+        j.Prices_by_class = make(map[string]float64)
+    }
+
+    for class, price := range prices {
+        j.Prices_by_class[class] = price
+    }
 }

@@ -25,6 +25,7 @@ func ParseJourneysForDay(origin string, destiny string, search_date time.Time) (
 
 	doc.Find("#row tbody .odd,.even").Each(func(row_number int, row_journey *goquery.Selection) {
 		journey := parseJourneyRow(row_journey, origin, destiny, search_date)
+        journey = CheckPosibleOffer(journey)
 		journeys = append(journeys, journey)
 	})
 
@@ -50,26 +51,25 @@ func parseJourneyRow(tr *goquery.Selection, origin string, destiny string, searc
 	journey := Journey{Origin: origin, Destiny: destiny}
 	tr.Find("td").Each(func(column_number int, column_content *goquery.Selection) {
 		switch column_number {
-		case 0:
+		case 0: //id and train type
                 journey.Train_type, journey.Train_id = parseTrainTypeId(column_content.Text())
 		case 1: //departure
 			journey.Departure = parse_time(search_date, column_content.Text())
 		case 2: //arrival
 			journey.Arrival = parse_time(search_date, column_content.Text())
 		case 4:
-			journey.Prices_by_class = parseJourneyPrices(column_content)
+            prices_by_class := parseJourneyPrices(column_content)
+            journey.AddPrices(prices_by_class)
 		}
-
 	})
 	return journey
 }
 
-func parseTrainTypeId(train_type_and_id string) (train_type string, id int) {
+func parseTrainTypeId(train_type_and_id string) (train_type string, id string) {
     train_type_and_id = standardizeSpaces(train_type_and_id)
     type_and_id := strings.Split(train_type_and_id, " ")
     train_type = type_and_id[1]
-    id, err := strconv.Atoi(type_and_id[0])
-    CheckError(err)
+    id = type_and_id[0]
     return
 }
 
