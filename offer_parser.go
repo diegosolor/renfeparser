@@ -25,11 +25,11 @@ c0-param2=string:%v
 c0-param3=string:%v
 batchId=1`
 
-    post_values := fmt.Sprintf(template_post_values,
-			journey.Train_id,
-			journey.Departure.Format("02-01-2006"),
-			journey.Origin,
-			journey.Destiny)
+	post_values := fmt.Sprintf(template_post_values,
+		journey.Train_id,
+		journey.Departure.Format("02-01-2006"),
+		journey.Origin,
+		journey.Destiny)
 
 	post_body_values := bytes.NewBufferString(post_values)
 
@@ -44,10 +44,9 @@ batchId=1`
 	js_response := string(body[:])
 
 	prices_by_class := parseJSResponse(js_response)
-    journey.AddPrices(prices_by_class)
+	journey.AddPrices(prices_by_class)
 
 	return journey
-
 }
 
 func parseJSResponse(js_response string) map[string]float64 {
@@ -55,14 +54,14 @@ func parseJSResponse(js_response string) map[string]float64 {
 	matches := parse_js.FindAllStringSubmatch(js_response, -1)
 	prices_by_class := make(map[string]float64)
 
-    for _, offer_match := range matches {
+	for _, offer_match := range matches {
 		str_price := strings.Replace(offer_match[2], ",", ".", 1)
 		price, err := strconv.ParseFloat(str_price, 2)
 		CheckError(err)
 		class := offer_match[1]
 		prices_by_class[class] = price
 
-    }
+	}
 
 	return prices_by_class
 
