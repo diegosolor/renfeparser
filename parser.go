@@ -28,7 +28,6 @@ func ParseJourneysForDay(origin string, destiny string, search_date time.Time) (
         journey = CheckPosibleOffer(journey)
 		journeys = append(journeys, journey)
 	})
-
 	return
 }
 
@@ -80,7 +79,6 @@ func parse_time(date time.Time, str_time string) time.Time {
 	minute, err := strconv.Atoi(hour_and_minute[1])
 	CheckError(err)
 	parsed_date := time.Date(date.Year(), date.Month(), date.Day(), hour, minute, 0, 0, date.Location())
-
 	return parsed_date
 }
 
@@ -95,9 +93,6 @@ func parseJourneyPrices(tr *goquery.Selection) map[string]float64 {
 		price, err := strconv.ParseFloat(str_price, 2)
 		CheckError(err)
 		prices_by_class[class] = price
-
-		//log.Print(fmt.Sprintf("\tTarifa %s: %v",class, price))
-
 	})
 	return prices_by_class
 }
