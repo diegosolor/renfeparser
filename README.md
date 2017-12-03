@@ -26,6 +26,8 @@ func main() {
         log.Print(journey)
     }
 
+    renfeparser.ExportToCSV(journeys, "result.csv", nil)
+
 }
 
 ```
