@@ -38,5 +38,16 @@ func (j *Journey) Price(class string) float64 {
         log.Fatal(fmt.Sprintf("Class %v not found in journey %v", class, j))
     }
     return price
+}
+
+func (j *Journey) CheapestClass() (cheapest_class string) {
+    var cheapest_price float64
+    for class, price := range j.Prices_by_class {
+        if (cheapest_price == 0 || price < cheapest_price) {
+            cheapest_price = price
+            cheapest_class = class
+        } 
+    }
+    return
 
 }
