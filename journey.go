@@ -49,5 +49,13 @@ func (j *Journey) CheapestClass() (cheapest_class string) {
         } 
     }
     return
+}
 
+
+func (j *Journey) Classes() ([]string) {
+    classes := make([]string, 0, len(j.Prices_by_class))
+    for k := range j.Prices_by_class {
+        classes = append(classes, k)
+    }
+    return classes
 }
