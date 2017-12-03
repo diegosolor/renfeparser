@@ -3,6 +3,7 @@ package renfeparser
 import (
     "fmt"
     "time"
+    "log"
 )
 
 type Journey struct {
@@ -29,4 +30,13 @@ func (j *Journey) AddPrices(prices map[string]float64) {
     for class, price := range prices {
         j.Prices_by_class[class] = price
     }
+}
+
+func (j *Journey) Price(class string) float64 {
+    price, class_exists := j.Prices_by_class[class]
+    if (!class_exists) {
+        log.Fatal(fmt.Sprintf("Class %v not found in journey %v", class, j))
+    }
+    return price
+
 }
