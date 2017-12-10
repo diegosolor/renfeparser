@@ -5,29 +5,19 @@
 
 Library to parse train's schedule from spanish renfe operator
 
-Parsing a period:
-``` go
+## Usage
 
-package main
+    $ go run main/main_parser.go --origin SANTA --destiny MADRI 
 
-import (
-    "log"
-    "time"
-    "github.com/diegosolor/renfeparser"
-)
+by default it searches the two next months, you can change this behaviur wiyh the flags start_date and end_date
+The result will be a csv with the cheapest journey for each train
 
-func main() {
-    tz_madrid, err := time.LoadLocation("Europe/Madrid")
-    renfeparser.CheckError(err)
-    start_date := time.Date(2017,12,16,0, 0, 0, 0, tz_madrid)
-    end_date := time.Date(2017,12,28,0, 0, 0, 0, tz_madrid)
-    journeys := renfeparser.ParseJourneysForPeriod("MADRI","SANTA", start_date, end_date)
-    for _, journey := range(journeys) {
-        log.Print(journey)
-    }
+## TODO
 
-    renfeparser.ExportToCSV(journeys, "result.csv", nil)
+dictionary for station's names
+allow to store the data in a data base
+paralelize requests
 
-}
+## Disclaimer
 
-```
+This is a personal project with two objetives: learn some Go language and enter in renfe's web as few time as possible. Any feedback is more than wellcome
