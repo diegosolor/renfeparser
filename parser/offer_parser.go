@@ -1,4 +1,4 @@
-package renfeparser
+package parser
 
 import (
 	"bytes"
@@ -8,9 +8,10 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+    "github.com/diegosolor/renfeparser/common"
 )
 
-func CheckPosibleOffer(journey Journey) Journey {
+func CheckPosibleOffer(journey common.Journey) common.Journey {
 
 	template_post_values := `
 callCount=1
@@ -36,11 +37,11 @@ batchId=1`
 	url_offers := "http://horarios.renfe.com/HIRRenfeWeb/dwr/call/plaincall/preciosManager.calcularPreciosAJAX.dwr"
 
 	resp, err_post := http.Post(url_offers, " text/plain", post_body_values)
-	CheckError(err_post)
+	common.CheckError(err_post)
 
 	defer resp.Body.Close()
 	body, err_read := ioutil.ReadAll(resp.Body)
-	CheckError(err_read)
+	common.CheckError(err_read)
 	js_response := string(body[:])
 
 	prices_by_class := parseJSResponse(js_response)
@@ -57,7 +58,7 @@ func parseJSResponse(js_response string) map[string]float64 {
 	for _, offer_match := range matches {
 		str_price := strings.Replace(offer_match[2], ",", ".", 1)
 		price, err := strconv.ParseFloat(str_price, 2)
-		CheckError(err)
+		common.CheckError(err)
 		class := offer_match[1]
 		prices_by_class[class] = price
 

@@ -1,12 +1,13 @@
-package renfeparser
+package parser
 
 import (
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
 	"log"
 	"strconv"
 	"strings"
 	"time"
+	"github.com/PuerkitoBio/goquery"
+    "github.com/diegosolor/renfeparser/common"
 )
 
 func createJourneyURL(origin string, destiny string, search_date time.Time) (url string) {
@@ -18,10 +19,10 @@ func createJourneyURL(origin string, destiny string, search_date time.Time) (url
 	return
 }
 
-func ParseJourneysForDay(origin string, destiny string, search_date time.Time) (journeys []Journey) {
+func ParseJourneysForDay(origin string, destiny string, search_date time.Time) (journeys []common.Journey) {
 	url := createJourneyURL(origin, destiny, search_date)
 	doc, err := goquery.NewDocument(url)
-	CheckError(err)
+	common.CheckError(err)
 
 	doc.Find("#row tbody .odd,.even").Each(func(row_number int, row_journey *goquery.Selection) {
 		journey := parseJourneyRow(row_journey, origin, destiny, search_date)
@@ -31,7 +32,7 @@ func ParseJourneysForDay(origin string, destiny string, search_date time.Time) (
 	return
 }
 
-func ParseJourneysForPeriod(origin string, destiny string, start_date time.Time, end_date time.Time) (journeys []Journey) {
+func ParseJourneysForPeriod(origin string, destiny string, start_date time.Time, end_date time.Time) (journeys []common.Journey) {
 	search_date := start_date
 	for search_date.Before(end_date) {
 		days_journeys := ParseJourneysForDay(origin, destiny, search_date)
@@ -46,8 +47,8 @@ func ParseJourneysForPeriod(origin string, destiny string, start_date time.Time,
 	return
 }
 
-func parseJourneyRow(tr *goquery.Selection, origin string, destiny string, search_date time.Time) Journey {
-	journey := Journey{Origin: origin, Destiny: destiny}
+func parseJourneyRow(tr *goquery.Selection, origin string, destiny string, search_date time.Time) common.Journey {
+	journey := common.Journey{Origin: origin, Destiny: destiny}
 	tr.Find("td").Each(func(column_number int, column_content *goquery.Selection) {
 		switch column_number {
 		case 0: //id and train type
@@ -75,9 +76,9 @@ func parseTrainTypeId(train_type_and_id string) (train_type string, id string) {
 func parse_time(date time.Time, str_time string) time.Time {
 	hour_and_minute := strings.Split(str_time, ".")
 	hour, err := strconv.Atoi(hour_and_minute[0])
-	CheckError(err)
+	common.CheckError(err)
 	minute, err := strconv.Atoi(hour_and_minute[1])
-	CheckError(err)
+	common.CheckError(err)
 	parsed_date := time.Date(date.Year(), date.Month(), date.Day(), hour, minute, 0, 0, date.Location())
 	return parsed_date
 }
@@ -91,7 +92,7 @@ func parseJourneyPrices(tr *goquery.Selection) map[string]float64 {
 		str_price := strings.Replace(class_and_price[1], ",", ".", 1)
 		class := class_and_price[0]
 		price, err := strconv.ParseFloat(str_price, 2)
-		CheckError(err)
+		common.CheckError(err)
 		prices_by_class[class] = price
 	})
 	return prices_by_class

@@ -1,16 +1,17 @@
-package renfeparser
+package storable
 
 import (
 	"encoding/csv"
 	"fmt"
 	"os"
+    "github.com/diegosolor/renfeparser/common"
 )
 
 type JourneysToCSV struct {
 	Headers             []string
 	File_name           string
 	Only_cheapest_class bool
-    Journeys            []Journey
+    Journeys            []common.Journey
 }
 
 func defaultHeaders() []string {
@@ -19,7 +20,7 @@ func defaultHeaders() []string {
 	return headers
 }
 
-func ExportToCSV(journeys []Journey, file_name string, headers []string) {
+func ExportToCSV(journeys []common.Journey, file_name string, headers []string) {
 
 	if headers == nil {
 		headers = defaultHeaders()
@@ -38,7 +39,7 @@ func ExportToCSV(journeys []Journey, file_name string, headers []string) {
 func (to_csv JourneysToCSV) WriteFile() {
 
 	file, err := os.Create(to_csv.File_name)
-	CheckError(err)
+	common.CheckError(err)
 	defer file.Close()
 
 	writer := csv.NewWriter(file)
@@ -51,7 +52,7 @@ func (to_csv JourneysToCSV) WriteFile() {
 	}
 }
 
-func (to_csv JourneysToCSV) writeJourney(journey Journey, csv_writer *csv.Writer) {
+func (to_csv JourneysToCSV) writeJourney(journey common.Journey, csv_writer *csv.Writer) {
 	classes := journey.Classes()
 	if to_csv.Only_cheapest_class {
 		classes = []string{journey.CheapestClass()}
@@ -59,11 +60,11 @@ func (to_csv JourneysToCSV) writeJourney(journey Journey, csv_writer *csv.Writer
 	for _, class := range classes {
 		journey_values := to_csv.journeyValues(journey, class)
 		err := csv_writer.Write(journey_values)
-		CheckError(err)
+		common.CheckError(err)
 	}
 }
 
-func (to_csv JourneysToCSV) journeyValues(journey Journey, class string) []string {
+func (to_csv JourneysToCSV) journeyValues(journey common.Journey, class string) []string {
 	journey_values := make([]string, 0)
 	for _, column := range to_csv.Headers {
 		var value string

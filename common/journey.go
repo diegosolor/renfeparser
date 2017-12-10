@@ -1,4 +1,4 @@
-package renfeparser
+package common
 
 import (
     "fmt"
