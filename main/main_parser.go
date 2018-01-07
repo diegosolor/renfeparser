@@ -25,8 +25,8 @@ func main() {
     }
 
     csv_name := fmt.Sprintf("journeys_%v_%v_from_%v_to_%v.csv", *origin, *destiny, *str_start_date, *str_end_date)
-
     storable.ExportToCSV(journeys, csv_name, nil)
+    storable.ExportToPostgreSQL(journeys)
 
 }
 
